@@ -1,0 +1,288 @@
+{
+  "channels": {
+    "Temperature": {
+      "name": "Temperature",
+      "segments": [
+        {
+          "x_start": 0.0,
+          "x_end": 1148.0,
+          "label": "[0.00 : 1148.00]",
+          "poly_degree": 1,
+          "is_excluded": false,
+          "color": "#1f77b4",
+          "fit_result": {
+            "coefficients": [
+              0.23499500313070684,
+              163.25568804631627
+            ],
+            "rmse": 51.26991626736065,
+            "r_squared": 0.6980009909801662,
+            "points_count": 1149
+          }
+        }
+      ],
+      "time_offset": 0.0,
+      "is_visible": false,
+      "base_color": "#1f77b4",
+      "excluded_indices": [],
+      "thickness": 1.5
+    },
+    "К0": {
+      "name": "К0",
+      "segments": [
+        {
+          "x_start": 0.0,
+          "x_end": 14.273145174689724,
+          "label": "[0.00 : 14.27]",
+          "poly_degree": 3,
+          "is_excluded": false,
+          "color": "#FF0000",
+          "fit_result": {
+            "coefficients": [
+              0.03961266275588582,
+              -1.7020086168252109,
+              25.236974173388237,
+              229.42241155120558
+            ],
+            "rmse": 7.067654125159702,
+            "r_squared": 0.9574497527273217,
+            "points_count": 63
+          }
+        },
+        {
+          "x_start": 14.273145174689724,
+          "x_end": 72.59488642377599,
+          "label": "[14.27 : 72.59]",
+          "poly_degree": 2,
+          "is_excluded": false,
+          "color": "#FF0000",
+          "fit_result": {
+            "coefficients": [
+              -0.004808532561102474,
+              0.9972238239797577,
+              344.8262084357531
+            ],
+            "rmse": 4.551360654982214,
+            "r_squared": 0.8037717906879551,
+            "points_count": 188
+          }
+        },
+        {
+          "x_start": 72.59488642377599,
+          "x_end": 682.8233698177489,
+          "label": "[72.59 : 682.82]",
+          "poly_degree": 3,
+          "is_excluded": false,
+          "color": "#FF0000",
+          "fit_result": {
+            "coefficients": [
+              1.812801393441532e-07,
+              -0.00043208043611703273,
+              0.3638992181095898,
+              367.6688000558723
+            ],
+            "rmse": 1.2895596633278554,
+            "r_squared": 0.9969087480385143,
+            "points_count": 2805
+          }
+        },
+        {
+          "x_start": 682.8233698177489,
+          "x_end": 1148.0,
+          "label": "[682.82 : 1148.00]",
+          "poly_degree": 2,
+          "is_excluded": false,
+          "color": "#FF0000",
+          "fit_result": {
+            "coefficients": [
+              -2.9917961324343878e-05,
+              0.07347295676962766,
+              436.1845692455134
+            ],
+            "rmse": 1.101607337635776,
+            "r_squared": 0.8221289518963414,
+            "points_count": 1890
+          }
+        }
+      ],
+      "time_offset": 0.0,
+      "is_visible": true,
+      "base_color": "#ff7f0e",
+      "excluded_indices": [
+        256,
+        257,
+        258,
+        260,
+        261,
+        262,
+        264,
+        265,
+        266,
+        267,
+        269,
+        168,
+        169,
+        170,
+        172,
+        173,
+        174,
+        175,
+        177,
+        178,
+        179,
+        181,
+        182,
+        183,
+        184,
+        186,
+        187,
+        188,
+        189,
+        191,
+        192,
+        193,
+        195,
+        196,
+        197,
+        198,
+        200,
+        201,
+        202,
+        204,
+        205,
+        206,
+        207,
+        209,
+        210,
+        211,
+        212,
+        214,
+        215,
+        216,
+        218,
+        219,
+        220,
+        221,
+        223,
+        224,
+        225,
+        227,
+        228,
+        229,
+        230,
+        232,
+        233,
+        234,
+        235,
+        237,
+        238,
+        239,
+        241,
+        242,
+        243,
+        244,
+        246,
+        247,
+        248,
+        250,
+        251,
+        252,
+        253,
+        255
+      ],
+      "thickness": 1.5
+    },
+    "К1": {
+      "name": "К1",
+      "segments": [
+        {
+          "x_start": 0.0,
+          "x_end": 263.19296569335364,
+          "label": "[0.00 : 263.19]",
+          "poly_degree": 2,
+          "is_excluded": false,
+          "color": "#FF0000",
+          "fit_result": {
+            "coefficients": [
+              -0.001595731196075207,
+              1.3694347769172355,
+              23.31539662289404
+            ],
+            "rmse": 1.3369866923976808,
+            "r_squared": 0.9996629700427898,
+            "points_count": 1208
+          }
+        },
+        {
+          "x_start": 263.19296569335364,
+          "x_end": 618.4628783876269,
+          "label": "[263.19 : 618.46]",
+          "poly_degree": 3,
+          "is_excluded": false,
+          "color": "#FF0000",
+          "fit_result": {
+            "coefficients": [
+              6.226567583755838e-07,
+              -0.0014220690283594023,
+              1.1488006494182466,
+              58.00301090649776
+            ],
+            "rmse": 0.43843680897662446,
+            "r_squared": 0.9997602560192144,
+            "points_count": 1633
+          }
+        },
+        {
+          "x_start": 618.4628783876269,
+          "x_end": 1148.0,
+          "label": "[618.46 : 1148.00]",
+          "poly_degree": 2,
+          "is_excluded": false,
+          "color": "#FF0000",
+          "fit_result": {
+            "coefficients": [
+              -8.99901601005837e-05,
+              0.21385470093163464,
+              274.0127107355786
+            ],
+            "rmse": 0.2587994714872387,
+            "r_squared": 0.9989892304202961,
+            "points_count": 2185
+          }
+        }
+      ],
+      "time_offset": 0.0,
+      "is_visible": true,
+      "base_color": "#2ca02c",
+      "excluded_indices": [],
+      "thickness": 1.5
+    },
+    "К2": {
+      "name": "К2",
+      "segments": [
+        {
+          "x_start": 0.0,
+          "x_end": 1148.0,
+          "label": "[0.00 : 1148.00]",
+          "poly_degree": 1,
+          "is_excluded": false,
+          "color": "#FF0000",
+          "fit_result": null
+        }
+      ],
+      "time_offset": 0.0,
+      "is_visible": false,
+      "base_color": "#d62728",
+      "excluded_indices": [],
+      "thickness": 1.5
+    }
+  },
+  "segments": {},
+  "settings": {
+    "active_channel": "К1",
+    "selected_segment_index": null,
+    "show_source_data": true,
+    "show_approximation": true,
+    "auto_recalculate": true
+  }
+}
