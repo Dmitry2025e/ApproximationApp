@@ -115,6 +115,10 @@ class MainWindow(QMainWindow):
                     show_approximation=self.state.show_approximation
                 )
 
+                # ✅ Встраиваем интерактивные границы сегментов
+                if hasattr(self, 'segment_mouse_handler'):
+                    self.segment_mouse_handler._rebuild_boundaries()
+
         # Setup handlers first
         self.analysis_setup_handler = AnalysisSetupHandler(
             self, self.state,

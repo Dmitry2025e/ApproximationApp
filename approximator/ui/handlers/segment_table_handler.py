@@ -24,31 +24,74 @@ class SegmentTableHandler:
     LINE_STYLES = ['-', '--', '-.', ':']
     LINE_STYLE_NAMES = ['Сплошная', 'Пунктирная', 'Штрихпунктирная', 'Точечная']
     
-    def __init__(self, main_window, state, fitter, redraw_callback=None, 
+    # def __init__(self, main_window, state, fitter, redraw_callback=None,
+    #              update_table_callback=None, get_stitch_params=None):
+    #     """Инициализация обработчика таблицы сегментов."""
+    #     self.main_window = main_window
+    #     self.state = state
+    #     self.fitter = fitter
+    #     self.redraw_callback = redraw_callback if redraw_callback else lambda *a, **kw: None
+    #     self.update_table_callback = update_table_callback if update_table_callback else lambda: None
+    #     self.get_stitch_params = get_stitch_params if get_stitch_params else lambda: {'enabled': False, 'method': 1}
+    #     self._handlers = {}
+    #
+    #     # Инициализируем базовые атрибуты
+    #     self.analysis_tab = None
+    #     self.segment_table = None
+    #
+    #     # Пытаемся найти таблицу сегментов
+    #     self._find_segments_table()
+    #
+    #     # Настраиваем таблицу, если она найдена
+    #     if self.segment_table:
+    #         self._setup_table()
+    #         self._connect_events()
+    #     else:
+    #         print("WARNING: segments_table not found in analysis_tab")
+    #
+    # def __init__(self, main_window, app_state, fitter, redraw_callback, update_table_callback, get_stitch_params=None):
+    #     """Инициализация обработчика таблицы сегментов."""
+    #     self.main_window = main_window
+    #     self.state = app_state
+    #     self.fitter = fitter
+    #     self.redraw_callback = redraw_callback
+    #     self.update_table_callback = update_table_callback
+    #     self.get_stitch_params = get_stitch_params or (lambda: {'enabled': False, 'method': 1})
+    #
+    #     # Инициализируем таблицу
+    #     self.table_widget = self.main_window.analysis_tab.segments_table
+    #     self.table_widget.setColumnCount(len(self.COLUMNS))
+    #     self.table_widget.setHorizontalHeaderLabels(self.HEADERS)
+    #     self.table_widget.setSelectionBehavior(QTableWidget.SelectRows)
+    #     self.table_widget.setSelectionMode(QTableWidget.SingleSelection)
+    #
+    #     # Подключаем обработчики событий
+    #     self.table_widget.cellChanged.connect(self._on_cell_changed)
+    #     self.table_widget.itemSelectionChanged.connect(self._on_selection_changed)
+
+    def __init__(self, main_window, app_state, fitter, redraw_callback=None,
                  update_table_callback=None, get_stitch_params=None):
         """Инициализация обработчика таблицы сегментов."""
+
         self.main_window = main_window
-        self.state = state
+        self.state = app_state
         self.fitter = fitter
-        self.redraw_callback = redraw_callback if redraw_callback else lambda *a, **kw: None
-        self.update_table_callback = update_table_callback if update_table_callback else lambda: None
-        self.get_stitch_params = get_stitch_params if get_stitch_params else lambda: {'enabled': False, 'method': 1}
+        self.redraw_callback = redraw_callback or (lambda *a, **kw: None)
+        self.update_table_callback = update_table_callback or (lambda: None)
+        self.get_stitch_params = get_stitch_params or (lambda: {'enabled': False, 'method': 1})
         self._handlers = {}
-        
-        # Инициализируем базовые атрибуты
-        self.analysis_tab = None
-        self.table = None
-        
-        # Пытаемся найти таблицу сегментов
-        self._find_segments_table()
-        
-        # Настраиваем таблицу, если она найдена
-        if self.table:
-            self._setup_table()
-            self._connect_events()
-        else:
-            print("WARNING: segments_table not found in analysis_tab")
-            
+
+        # Получаем таблицу сегментов из analysis_tab
+        self.segment_table = self.main_window.analysis_tab.segments_table
+        self.segment_table.setColumnCount(len(self.COLUMNS))
+        self.segment_table.setHorizontalHeaderLabels(self.HEADERS)
+        self.segment_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.segment_table.setSelectionMode(QTableWidget.SingleSelection)
+
+        # Подключаем обработчики событий
+        self.segment_table.cellChanged.connect(self._on_cell_changed)
+        self.segment_table.itemSelectionChanged.connect(self._on_selection_changed)
+
     def _find_segments_table(self):
         """Находит таблицу сегментов в главном окне."""
         # Находим вкладку анализа
@@ -57,37 +100,37 @@ class SegmentTableHandler:
             
         # Находим таблицу сегментов
         if self.analysis_tab and hasattr(self.analysis_tab, 'segments_table'):
-            self.table = self.analysis_tab.segments_table
+            self.segment_table = self.analysis_tab.segments_table
             
         self._setup_table()
         self._connect_events()
         
     def _setup_table(self):
         """Настройка таблицы сегментов."""
-        if not self.table:
+        if not self.segment_table:
             print("WARNING: Cannot setup table - table widget is None")
             return
             
-        self.table.setColumnCount(len(self.COLUMNS))
-        self.table.setHorizontalHeaderLabels(self.HEADERS)
-        header = self.table.horizontalHeader()
+        self.segment_table.setColumnCount(len(self.COLUMNS))
+        self.segment_table.setHorizontalHeaderLabels(self.HEADERS)
+        header = self.segment_table.horizontalHeader()
         for i in range(len(self.COLUMNS)):
             header.setSectionResizeMode(i, QHeaderView.ResizeToContents)
             
         # Разрешаем выделение только целых строк
-        self.table.setSelectionBehavior(QTableWidget.SelectRows)
-        self.table.setSelectionMode(QTableWidget.SingleSelection)
+        self.segment_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.segment_table.setSelectionMode(QTableWidget.SingleSelection)
     
     def _connect_events(self):
         """Подключение обработчиков событий."""
-        if not self.table:
+        if not self.segment_table:
             print("WARNING: Cannot connect events - table widget is None")
             return
             
         # События таблицы
-        self.table.cellChanged.connect(self._on_cell_changed)
-        self.table.cellDoubleClicked.connect(self._on_cell_double_clicked)
-        self.table.itemSelectionChanged.connect(self._on_selection_changed)
+        self.segment_table.cellChanged.connect(self._on_cell_changed)
+        self.segment_table.cellDoubleClicked.connect(self._on_cell_double_clicked)
+        self.segment_table.itemSelectionChanged.connect(self._on_selection_changed)
         
         # События кнопок
         analysis_tab = self.main_window.analysis_tab
@@ -101,7 +144,7 @@ class SegmentTableHandler:
     def _on_selection_changed(self):
         """Обработчик изменения выделения в таблице."""
         try:
-            selected_items = self.table.selectedItems()
+            selected_items = self.segment_table.selectedItems()
             if not selected_items:
                 self.state.selected_segment_index = None
             else:
@@ -157,26 +200,6 @@ class SegmentTableHandler:
                         
                 # После фитирования обновляем UI
                 self.redraw_callback(preserve_zoom=True)
-    
-    def __init__(self, main_window, app_state, fitter, redraw_callback, update_table_callback, get_stitch_params=None):
-        """Инициализация обработчика таблицы сегментов."""
-        self.main_window = main_window
-        self.state = app_state
-        self.fitter = fitter
-        self.redraw_callback = redraw_callback
-        self.update_table_callback = update_table_callback
-        self.get_stitch_params = get_stitch_params or (lambda: {'enabled': False, 'method': 1})
-        
-        # Инициализируем таблицу
-        self.table_widget = self.main_window.analysis_tab.segments_table
-        self.table_widget.setColumnCount(len(self.COLUMNS))
-        self.table_widget.setHorizontalHeaderLabels(self.HEADERS)
-        self.table_widget.setSelectionBehavior(QTableWidget.SelectRows)
-        self.table_widget.setSelectionMode(QTableWidget.SingleSelection)
-        
-        # Подключаем обработчики событий
-        self.table_widget.cellChanged.connect(self._on_cell_changed)
-        self.table_widget.itemSelectionChanged.connect(self._on_selection_changed)
 
     def _connect_events(self):
         """Подключает обработчики событий."""
@@ -390,38 +413,38 @@ class SegmentTableHandler:
 
     def update_table(self):
         """Обновляет таблицу сегментов."""
-        if not self.table:
+        if not self.segment_table:
             print("WARNING: Cannot update table - table widget is None")
             return
             
         try:
-            self.table.blockSignals(True)  # Блокируем сигналы
+            self.segment_table.blockSignals(True)  # Блокируем сигналы
             
             active_channel = self.state.active_channel_name
             if not active_channel or active_channel not in self.state.channel_states:
-                self.table.setRowCount(0)
+                self.segment_table.setRowCount(0)
                 return
 
             channel_state = self.state.channel_states[active_channel]
             if not channel_state.segments:
-                self.table.setRowCount(0)
+                self.segment_table.setRowCount(0)
                 return
 
-            self.table.setRowCount(len(channel_state.segments))
+            self.segment_table.setRowCount(len(channel_state.segments))
             
             for row, segment in enumerate(channel_state.segments):
                 for col, column_name in enumerate(self.COLUMNS):
                     cell_widget = self._create_table_cell(row, col, segment)
                     if cell_widget:
-                        self.table.setCellWidget(row, col, cell_widget)
+                        self.segment_table.setCellWidget(row, col, cell_widget)
                     else:
                         item = QTableWidgetItem(str(getattr(segment, column_name, '')))
-                        self.table.setItem(row, col, item)
+                        self.segment_table.setItem(row, col, item)
                         
         except Exception as e:
             print(f"Error updating segment table: {e}")
         finally:
-            self.table.blockSignals(False)  # Разблокируем сигналы
+            self.segment_table.blockSignals(False)  # Разблокируем сигналы
 
     def _handle_merge_segment(self):
         idx = self.state.selected_segment_index
@@ -541,7 +564,7 @@ class SegmentTableHandler:
             segment = self.state.channel_states[active_channel].segments[row]
             header = self.COLUMNS[column]
             
-            item = self.table.item(row, column)
+            item = self.segment_table.item(row, column)
             if not item:
                 return
                 
@@ -585,37 +608,37 @@ class SegmentTableHandler:
     def update_table(self):
         """Обновляет содержимое таблицы."""
         # Переполучаем таблицу на случай, если она была создана после инициализации
-        if not self.table and hasattr(self, 'analysis_tab') and self.analysis_tab and hasattr(self.analysis_tab, 'segments_table'):
-            self.table = self.analysis_tab.segments_table
+        if not self.segment_table and hasattr(self, 'analysis_tab') and self.analysis_tab and hasattr(self.analysis_tab, 'segments_table'):
+            self.segment_table = self.analysis_tab.segments_table
             
-        if not self.table:
+        if not self.segment_table:
             print("WARNING: Cannot update table - table widget is None")
             return
             
-        self.table.blockSignals(True)
+        self.segment_table.blockSignals(True)
         try:
             active_channel = self.state.active_channel_name
             if not active_channel or active_channel not in self.state.channel_states:
-                self.table.setRowCount(0)
+                self.segment_table.setRowCount(0)
                 return
                 
             channel_state = self.state.channel_states[active_channel]
             segments = channel_state.segments
             
-            self.table.setRowCount(len(segments))
+            self.segment_table.setRowCount(len(segments))
             
             for row, segment in enumerate(segments):
                 # Начало
                 item = QTableWidgetItem(f"{segment.x_start:.2f}")
-                self.table.setItem(row, self.COLUMNS.index('x_start'), item)
+                self.segment_table.setItem(row, self.COLUMNS.index('x_start'), item)
                 
                 # Конец
                 item = QTableWidgetItem(f"{segment.x_end:.2f}")
-                self.table.setItem(row, self.COLUMNS.index('x_end'), item)
+                self.segment_table.setItem(row, self.COLUMNS.index('x_end'), item)
                 
                 # Степень полинома
                 item = QTableWidgetItem(str(segment.poly_degree))
-                self.table.setItem(row, self.COLUMNS.index('poly_degree'), item)
+                self.segment_table.setItem(row, self.COLUMNS.index('poly_degree'), item)
                 
                 # Тип сегмента (комбобокс)
                 combo = QComboBox()
@@ -623,11 +646,11 @@ class SegmentTableHandler:
                 combo.setCurrentText(segment.segment_type)
                 combo.currentTextChanged.connect(
                     self._get_or_create_handler(segment, 'type', combo))
-                self.table.setCellWidget(row, self.COLUMNS.index('segment_type'), combo)
+                self.segment_table.setCellWidget(row, self.COLUMNS.index('segment_type'), combo)
                 
                 # Толщина
                 item = QTableWidgetItem(f"{segment.thickness:.1f}")
-                self.table.setItem(row, self.COLUMNS.index('thickness'), item)
+                self.segment_table.setItem(row, self.COLUMNS.index('thickness'), item)
                 
                 # Стиль линии (комбобокс)
                 combo = QComboBox()
@@ -635,7 +658,7 @@ class SegmentTableHandler:
                 combo.setCurrentText(segment.line_style)
                 combo.currentTextChanged.connect(
                     self._get_or_create_handler(segment, 'line_style', combo))
-                self.table.setCellWidget(row, self.COLUMNS.index('line_style'), combo)
+                self.segment_table.setCellWidget(row, self.COLUMNS.index('line_style'), combo)
                 
                 # Цвет
                 color_widget = QWidget()
@@ -650,14 +673,14 @@ class SegmentTableHandler:
                 color_layout.addWidget(color_button)
                 color_layout.addStretch()
                 
-                self.table.setCellWidget(row, self.COLUMNS.index('color'), color_widget)
+                self.segment_table.setCellWidget(row, self.COLUMNS.index('color'), color_widget)
                 
             # Восстанавливаем выделение
             if self.state.selected_segment_index is not None:
-                self.table.selectRow(self.state.selected_segment_index)
+                self.segment_table.selectRow(self.state.selected_segment_index)
                 
         finally:
-            self.table.blockSignals(False)
+            self.segment_table.blockSignals(False)
             
     def _on_segment_type_changed(self, row: int, new_type: str):
         """Обработчик изменения типа сегмента."""

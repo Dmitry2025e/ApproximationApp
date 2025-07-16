@@ -3,14 +3,22 @@
 import sys
 import os
 from pathlib import Path
+import json
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QEvent
+from PyQt5.QtWidgets import QMessageBox
+from app.main_window import MainWindow
+
+from approximator.StateRestorer import StateRestorer
+
+
 
 # Добавляем корневую директорию проекта в PYTHONPATH
 project_root = str(Path(__file__).parent)
 if project_root not in sys.path:
     sys.path.append(project_root)
 
-from PyQt5.QtWidgets import QApplication
-from app.main_window import MainWindow
+
 
 def clear_console():
     """
@@ -24,9 +32,8 @@ def clear_console():
         _ = os.system('clear')
 
 
-import json
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QEvent
+
+
 
 AUTOSAVE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "autosave.json")
 
@@ -61,53 +68,19 @@ def main():
         try:
             with open(AUTOSAVE_PATH, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            # Используем тот же механизм, что и при ручной загрузке проекта
-            if hasattr(window, 'import_tab') and hasattr(window.import_tab, '_handle_load_project'):
-                # эмулируем загрузку через import_tab
-                window.import_tab._handle_load_project_from_data(data)
-                # Явно обновляем интерфейс после загрузки состояния
-                if hasattr(window, 'analysis_setup_handler'):
-                    window.analysis_setup_handler.update_channels_table()
-                if hasattr(window, 'segment_table_handler'):
-                    window.segment_table_handler.update_table()
-                if hasattr(window, 'plot_manager'):
-                    # Обновим график, если возможно
-                    app_state = getattr(window, 'state', None)
-                    time_column = None
-                    if hasattr(window.import_tab, 'time_column_combo'):
-                        time_column = window.import_tab.time_column_combo.currentText()
-                    if app_state and hasattr(app_state, 'merged_dataframe') and app_state.merged_dataframe is not None:
-                        if not time_column and not app_state.merged_dataframe.empty:
-                            all_columns = app_state.merged_dataframe.columns
-                            if 'Time' in all_columns:
-                                time_column = 'Time'
-                            else:
-                                time_column = all_columns[0] if len(all_columns) > 0 else None
-                        if time_column:
-                            window.plot_manager.redraw_all_channels(
-                                df=app_state.merged_dataframe,
-                                x_col=time_column,
-                                channel_states=app_state.channel_states,
-                                active_channel_name=app_state.active_channel_name,
-                                selected_segment_index=app_state.selected_segment_index,
-                                preserve_zoom=False,
-                                show_source=app_state.show_source_data,
-                                show_approximation=app_state.show_approximation
-                            )
-                # Обновим элементы AnalysisTab, если есть
-                if hasattr(window, 'analysis_tab'):
-                    if hasattr(window.analysis_tab, 'update_controls'):
-                        window.analysis_tab.update_controls()
-                    if hasattr(window.analysis_tab, 'update_tables'):
-                        window.analysis_tab.update_tables()
+            restorer = StateRestorer(window)
+            restorer.restore(data)
         except Exception as e:
             QMessageBox.warning(window, 'Автозагрузка', f'Ошибка автозагрузки состояния: {e}')
+
+    #---------------------------------
 
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
     # Добавим метод для загрузки состояния из dict в ImportTab
     from PyQt5.QtWidgets import QWidget
+
     def _handle_load_project_from_data(self, data):
         main_window = self.parent()
         while main_window and not hasattr(main_window, 'import_event_handler'):
