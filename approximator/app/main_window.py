@@ -1,9 +1,9 @@
-# Путь: app/main_window.py
+# Путь: approximator/app/main_window.py
 
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTabWidget
 
 # Модели и виджеты
-from approximator.app.app_state import AppState
+from approximator.data_models.app_state import AppState
 from approximator.ui.tabs.import_tab import ImportTab
 from approximator.ui.tabs.analysis_tab import AnalysisTab
 from approximator.ui.tabs.export_tab import ExportTab
@@ -15,17 +15,16 @@ from approximator.services.data_merger import DataMerger
 from approximator.services.approximation.polynomial_fitter import PolynomialFitter
 
 # Парсеры
-from approximator.file_parsers.pyrometer_parser import PyrometerParser
-from approximator.file_parsers.adc_parser import AdcParser
-from approximator.file_parsers.generic_parser import GenericCsvParser
-from file_parsers.excel_parser import ExcelParser
+from approximator.file_parsers.excel_parser import ExcelParser
 
 # Обработчики UI
-from ui.handlers.import_handler import ImportEventHandler
-from ui.handlers.analysis_handler import AnalysisEventHandler
-from ui.handlers.analysis_setup_handler import AnalysisSetupHandler
-from ui.handlers.segment_mouse_handler import SegmentMouseHandler
-from ui.handlers.segment_table_handler import SegmentTableHandler
+from approximator.ui.handlers.import_event_handler import ImportEventHandler
+from approximator.ui.handlers.analysis_handler import AnalysisEventHandler
+from approximator.ui.handlers.analysis_setup_handler import AnalysisSetupHandler
+from approximator.ui.handlers.segment_mouse_handler import SegmentMouseHandler
+from approximator.ui.handlers.segment_table_handler import SegmentTableHandler
+
+from approximator.ui.setup.handler_initializer import create_handlers
 
 class MainWindow(QMainWindow):
     """Главное окно приложения."""
@@ -42,9 +41,9 @@ class MainWindow(QMainWindow):
         self.layout = QVBoxLayout(self.central_widget)
         
         # Инициализируем сервисы
-        from file_parsers.generic_csv_parser import GenericCsvParser
-        from file_parsers.excel_parser import ExcelParser
-        from file_parsers.adc_parser import AdcParser
+        from approximator.file_parsers.generic_csv_parser import GenericCsvParser
+        from approximator.file_parsers.excel_parser import ExcelParser
+        from approximator.file_parsers.adc_parser import AdcParser
         
         # Важен порядок: специализированные парсеры должны идти перед общими
         self.data_loader = DataLoader([
@@ -78,7 +77,8 @@ class MainWindow(QMainWindow):
         self.plot_manager = PlotManager(self.analysis_tab.plot_widget)
         
         # Создаем обработчики
-        self._create_handlers()
+        create_handlers(self)
+
 
     def request_recalculation(self):
         """Запускает пересчет аппроксимаций."""
@@ -86,7 +86,7 @@ class MainWindow(QMainWindow):
         if hasattr(self, 'segment_table_handler'):
             self.segment_table_handler._fit_segments()  # Только пересчет, без обновления UI
 
-    def _create_handlers(self):
+    def _create_handlers_old(self):
         """Инициализирует все обработчики и связывает их через колбэки."""
         def redraw_plot(preserve_zoom: bool = False):
             if not hasattr(self, 'plot_manager') or not hasattr(self, 'state'): return
@@ -156,7 +156,8 @@ class MainWindow(QMainWindow):
         
         # Mouse handler
         self.segment_mouse_handler = SegmentMouseHandler(
-            self, self.state, self.plot_manager,
+            state = self.state,
+            plot_manager = self.plot_manager,
             redraw_callback=redraw_plot,
             update_table_callback=lambda: self.segment_table_handler.update_table() if hasattr(self, 'segment_table_handler') else None,
             request_recalc_callback=self.request_recalculation

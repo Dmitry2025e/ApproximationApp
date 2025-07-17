@@ -6,8 +6,8 @@ from PyQt5.QtWidgets import QTableWidgetItem, QCheckBox, QWidget, QHBoxLayout, Q
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtCore import Qt
 
-from data_models.data_structures import Segment
-from services.math.standard_fitter import StandardFitter
+from approximator.data_models.segment import Segment
+from approximator.services.math.standard_fitter import StandardFitter
 
 class AnalysisEventHandler:
     def __init__(self, main_window, app_state, plot_manager, fitter):

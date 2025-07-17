@@ -2,7 +2,8 @@
 
 import numpy as np
 from typing import Optional, Tuple
-from approximator.data_models.data_structures import FitResult
+from approximator.data_models.fit_result import FitResult
+
 
 class PolynomialFitter:
     """Выполняет полиномиальную аппроксимацию данных."""

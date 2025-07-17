@@ -1,4 +1,4 @@
-# Путь: ui/handlers/import_handler.py
+# Путь: ui/handlers/import_event_handler.py
 # =================================================================================
 # МОДУЛЬ ОБРАБОТЧИКА СОБЫТИЙ ВКЛАДКИ "ИМПОРТ"
 # =================================================================================
@@ -6,8 +6,8 @@ import pandas as pd
 from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem, QListWidgetItem
 from typing import Set
 
-from data_models.channel_state import ChannelState
-from data_models.data_structures import Segment
+from approximator.data_models.channel_state import ChannelState
+from approximator.data_models.segment import Segment
 
 class ImportEventHandler:
     def __init__(self, main_window, app_state, data_loader, data_merger, analysis_setup_handler, analysis_reset_callback):

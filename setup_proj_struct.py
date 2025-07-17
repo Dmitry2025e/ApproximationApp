@@ -11,7 +11,7 @@ PROJECT_PATHS = [
     "app/project_manager.py",
     "data_models/__init__.py",
     "data_models/channel_state.py",
-    "data_models/data_structures.py",
+    "data_models/segment.py",
     "services/__init__.py",
     "services/data_loader.py",
     "services/data_merger.py",

@@ -1,5 +1,6 @@
 import numpy as np
-from approximator.data_models.data_structures import FitResult
+from approximator.data_models.fit_result import FitResult
+
 
 class Approximator:
     def prepare_data_for_fitting(self, data, segments):

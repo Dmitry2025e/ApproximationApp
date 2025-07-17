@@ -3,8 +3,8 @@
 import pandas as pd
 from typing import Dict, List, Any, Optional
 
-from data_models.channel_state import ChannelState
-from data_models.data_structures import Segment  # Импортируем тип Segment
+from approximator.data_models.channel_state import ChannelState
+from approximator.data_models.segment import Segment  # Импортируем тип Segment
 
 class AppState:
     """

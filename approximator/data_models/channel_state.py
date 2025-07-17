@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from typing import List, Optional, Set
-from .data_structures import Segment
+from .segment import Segment
 
 
 @dataclass

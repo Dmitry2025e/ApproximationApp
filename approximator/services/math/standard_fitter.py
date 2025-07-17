@@ -5,7 +5,7 @@
 import numpy as np
 import pandas as pd
 from typing import Optional
-from data_models.data_structures import FitResult
+from approximator.data_models.fit_result import FitResult
 
 class StandardFitter:
 

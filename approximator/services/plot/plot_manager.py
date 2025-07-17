@@ -1,4 +1,9 @@
-from .boundaries.draggable_boundary import DraggableSegmentBoundary
+"""
+PlotManager отвечает исключительно за визуализацию графика.
+Он не обрабатывает события, не управляет состоянием, не хранит интерактивные объекты.
+"""
+
+from .boundaries.draggable_segment_boundary import DraggableSegmentBoundary
 
 
 class PlotManager:

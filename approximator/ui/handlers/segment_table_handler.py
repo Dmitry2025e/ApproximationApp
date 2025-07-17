@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QTableWidgetItem, QCheckBox, QWidget, QHBoxLayout,
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
 
-from approximator.data_models.data_structures import Segment
+from approximator.data_models.segment import Segment
 
 class SegmentTableHandler:
     """Обработчик таблицы сегментов."""
