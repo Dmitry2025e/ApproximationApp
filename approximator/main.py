@@ -199,5 +199,6 @@ if __name__ == '__main__':
                     show_source=app_state.show_source_data,
                     show_approximation=app_state.show_approximation
                 )
+                
     QWidget._handle_load_project_from_data = _handle_load_project_from_data
     main()
