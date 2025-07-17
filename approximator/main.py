@@ -4,9 +4,8 @@ import sys
 import os
 from pathlib import Path
 import json
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5.QtCore import QEvent
-from PyQt5.QtWidgets import QMessageBox
 from app.main_window import MainWindow
 
 from approximator.StateRestorer import StateRestorer
