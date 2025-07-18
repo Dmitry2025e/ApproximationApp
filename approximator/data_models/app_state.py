@@ -13,6 +13,7 @@ class AppState:
     def __init__(self):
         # Состояние вкладки "Импорт"
         self.loaded_dataframes: Dict[str, pd.DataFrame] = {}
+        self.time_column: Optional[str] = None
         
         # Состояние вкладки "Анализ"
         self.merged_dataframe: pd.DataFrame = pd.DataFrame()

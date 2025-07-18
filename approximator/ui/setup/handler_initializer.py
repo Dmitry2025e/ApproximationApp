@@ -17,11 +17,20 @@ def create_handlers(main_window):
         if hasattr(main_window, 'segment_mouse_handler'):
             main_window.segment_mouse_handler._rebuild_boundaries()
 
+        # Получение выбранной колонки времени из GUI
+        time_column = None
+        if hasattr(main_window.import_tab, 'time_selector'):
+            time_column = main_window.import_tab.time_selector.get_selected()
+
+        # Защита от пустого выбора
+        if not time_column:
+            debug("[redraw_plot] ❌ time_column не выбрана — пропуск отрисовки")
+            return
+
         # Перерисовка графика
-        #main_window.plot_manager.redraw(preserve_zoom=preserve_zoom)
         main_window.plot_manager.redraw_all_channels(
             df=main_window.state.merged_dataframe,
-            x_col=main_window.state.time_column,
+            x_col=time_column,
             channel_states=main_window.state.channel_states,
             active_channel_name=main_window.state.active_channel_name,
             selected_segment_index=main_window.state.selected_segment_index,

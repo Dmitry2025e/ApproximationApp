@@ -1,15 +1,116 @@
 {
-  "channels": {},
-  "settings": {
-    "active_channel": "К1",
-    "selected_segment_index": null,
-    "show_source_data": true,
-    "show_approximation": true,
-    "auto_recalculate": true,
-    "time_column": "Time"
-  },
   "imported_files": [
     "C:/comsol_proj/ApproximationProject/data/data(real)/part0.txt.xls",
     "C:/comsol_proj/ApproximationProject/data/data(real)/sostav-num-1.tsf"
-  ]
+  ],
+  "settings": {
+    "time_column": null,
+    "active_channel": "Temperature",
+    "selected_segment_index": null,
+    "show_source_data": true,
+    "show_approximation": true,
+    "auto_recalculate": true
+  },
+  "channels": {
+    "Temperature": {
+      "name": "Temperature",
+      "display_name": "Temperature",
+      "segments": [
+        {
+          "x_start": 0.0,
+          "x_end": 1148.0,
+          "label": "",
+          "poly_degree": 3,
+          "segment_type": "Обычный",
+          "color": "#1f77b4",
+          "thickness": 1.5,
+          "fit_result": null,
+          "line_style": "-"
+        }
+      ],
+      "time_offset": 0.0,
+      "is_visible": true,
+      "base_color": "#1f77b4",
+      "excluded_indices": [],
+      "thickness": 1.5,
+      "line_style": "-",
+      "stitch_enabled": false,
+      "stitch_method": 1
+    },
+    "К0": {
+      "name": "К0",
+      "display_name": "К0",
+      "segments": [
+        {
+          "x_start": 0.0,
+          "x_end": 1148.0,
+          "label": "",
+          "poly_degree": 3,
+          "segment_type": "Обычный",
+          "color": "#1f77b4",
+          "thickness": 1.5,
+          "fit_result": null,
+          "line_style": "-"
+        }
+      ],
+      "time_offset": 0.0,
+      "is_visible": true,
+      "base_color": "#ff7f0e",
+      "excluded_indices": [],
+      "thickness": 1.5,
+      "line_style": "-",
+      "stitch_enabled": false,
+      "stitch_method": 1
+    },
+    "К1": {
+      "name": "К1",
+      "display_name": "К1",
+      "segments": [
+        {
+          "x_start": 0.0,
+          "x_end": 1148.0,
+          "label": "",
+          "poly_degree": 3,
+          "segment_type": "Обычный",
+          "color": "#1f77b4",
+          "thickness": 1.5,
+          "fit_result": null,
+          "line_style": "-"
+        }
+      ],
+      "time_offset": 0.0,
+      "is_visible": true,
+      "base_color": "#2ca02c",
+      "excluded_indices": [],
+      "thickness": 1.5,
+      "line_style": "-",
+      "stitch_enabled": false,
+      "stitch_method": 1
+    },
+    "К2": {
+      "name": "К2",
+      "display_name": "К2",
+      "segments": [
+        {
+          "x_start": 0.0,
+          "x_end": 1148.0,
+          "label": "",
+          "poly_degree": 3,
+          "segment_type": "Обычный",
+          "color": "#1f77b4",
+          "thickness": 1.5,
+          "fit_result": null,
+          "line_style": "-"
+        }
+      ],
+      "time_offset": 0.0,
+      "is_visible": true,
+      "base_color": "#d62728",
+      "excluded_indices": [],
+      "thickness": 1.5,
+      "line_style": "-",
+      "stitch_enabled": false,
+      "stitch_method": 1
+    }
+  }
 }

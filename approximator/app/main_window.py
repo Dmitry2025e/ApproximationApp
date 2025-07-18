@@ -1,5 +1,7 @@
 # Путь: approximator/app/main_window.py
 
+from approximator.utils.log import debug
+
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTabWidget
 
 # Модели и виджеты
@@ -30,7 +32,10 @@ class MainWindow(QMainWindow):
     """Главное окно приложения."""
     def __init__(self):
         super().__init__()
-        
+
+        # Инициализируем состояние
+        self.state = AppState()
+
         # Инициализация базовых компонентов
         self.setWindowTitle("Аппроксиматор")
         self.setGeometry(100, 100, 1200, 800)
@@ -53,10 +58,7 @@ class MainWindow(QMainWindow):
         ])
         self.data_merger = DataMerger()
         self.fitter = PolynomialFitter()
-        
-        # Инициализируем состояние
-        self.state = AppState()
-        
+
         # Создаем вкладки
         self.tabs = QTabWidget()
         self.import_tab = ImportTab(self)
@@ -78,7 +80,14 @@ class MainWindow(QMainWindow):
         
         # Создаем обработчики
         create_handlers(self)
-
+        # создаем контроллер приложения
+        from  approximator.services.project_state_controller import ProjectStateController
+        self.project_controller = ProjectStateController(self)
+        try:
+            self.project_controller.load_project("state.json")
+            debug("[MainWindow] ✅ Состояние проекта восстановлено")
+        except Exception as e:
+            debug(f"[MainWindow] ⚠️ Не удалось восстановить состояние: {e}")
 
     def request_recalculation(self):
         """Запускает пересчет аппроксимаций."""
@@ -86,79 +95,12 @@ class MainWindow(QMainWindow):
         if hasattr(self, 'segment_table_handler'):
             self.segment_table_handler._fit_segments()  # Только пересчет, без обновления UI
 
-    def _create_handlers_old(self):
-        """Инициализирует все обработчики и связывает их через колбэки."""
-        def redraw_plot(preserve_zoom: bool = False):
-            if not hasattr(self, 'plot_manager') or not hasattr(self, 'state'): return
-            
-            time_column = None
-            if hasattr(self.import_tab, 'time_column_combo'):
-                time_column = self.import_tab.time_column_combo.currentText()
-                
-            if not time_column and self.state.merged_dataframe is not None and not self.state.merged_dataframe.empty:
-                all_columns = self.state.merged_dataframe.columns
-                if 'Time' in all_columns:
-                    time_column = 'Time'
-                else:
-                    time_column = all_columns[0] if len(all_columns) > 0 else None
-                    
-            if time_column:
-                print(f"[redraw_plot] Redrawing with time_column={time_column}, preserve_zoom={preserve_zoom}")
-                self.plot_manager.redraw_all_channels(
-                    df=self.state.merged_dataframe,
-                    x_col=time_column,
-                    channel_states=self.state.channel_states,
-                    active_channel_name=self.state.active_channel_name,
-                    selected_segment_index=self.state.selected_segment_index,
-                    preserve_zoom=preserve_zoom,
-                    show_source=self.state.show_source_data,
-                    show_approximation=self.state.show_approximation
-                )
+    def closeEvent(self, event):
+        """Автосохранение состояния при закрытии приложения."""
+        try:
+            self.project_controller.save_project("state.json")
+            print("[MainWindow] 💾 Состояние проекта сохранено")
+        except Exception as e:
+            print(f"[MainWindow] ⚠️ Ошибка при сохранении состояния: {e}")
+        event.accept()
 
-                # ✅ Встраиваем интерактивные границы сегментов
-                if hasattr(self, 'segment_mouse_handler'):
-                    self.segment_mouse_handler._rebuild_boundaries()
-
-        # Setup handlers first
-        self.analysis_setup_handler = AnalysisSetupHandler(
-            self, self.state,
-            redraw_callback=redraw_plot,
-            update_segments_table_callback=lambda: self.segment_table_handler.update_table() if hasattr(self, 'segment_table_handler') else None,
-            update_channels_callback=lambda: self.analysis_setup_handler.update_channels_table() if hasattr(self, 'analysis_setup_handler') else None
-        )
-
-        def analysis_reset():
-            """Сброс состояния анализа."""
-            if hasattr(self, 'analysis_setup_handler'):
-                self.analysis_setup_handler.update_channels_table()
-            if hasattr(self, 'segment_table_handler'):
-                self.segment_table_handler.update_table()
-            if hasattr(self, 'plot_manager'):
-                redraw_plot(preserve_zoom=False)
-        
-        # Create Import handler with all dependencies
-        self.import_event_handler = ImportEventHandler(
-            main_window=self,
-            app_state=self.state,
-            data_loader=self.data_loader,
-            data_merger=self.data_merger,
-            analysis_setup_handler=self.analysis_setup_handler,
-            analysis_reset_callback=analysis_reset
-        )
-        
-        # Segment handlers
-        self.segment_table_handler = SegmentTableHandler(
-            self, self.state, self.fitter,
-            redraw_callback=redraw_plot,
-            update_table_callback=lambda: self.segment_table_handler.update_table() if hasattr(self, 'segment_table_handler') else None,
-            get_stitch_params=lambda: {'enabled': False, 'method': 1}
-        )
-        
-        # Mouse handler
-        self.segment_mouse_handler = SegmentMouseHandler(
-            state = self.state,
-            plot_manager = self.plot_manager,
-            redraw_callback=redraw_plot,
-            update_table_callback=lambda: self.segment_table_handler.update_table() if hasattr(self, 'segment_table_handler') else None,
-            request_recalc_callback=self.request_recalculation
-        )
